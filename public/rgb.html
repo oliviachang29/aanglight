@@ -11,23 +11,6 @@
     <div class="container">
       <h1 class="title">Aanglight Control Panel</h1>
       <p>Pick a color: <input type="color" id="pickColor"></p>
-      <form>
-        <h2>Bedtime</h2>
-        <label>Color</label>
-        <input type="color" id="bedtimePicker">
-        <label>Time</label>
-        <input type="time" id="bedtimeInput" value="21:00">
-        <input type="submit" onClick="setTime('bedtime')" value="Submit">
-      </form>
-
-      <form>
-        <h2>Wakeup Time</h2>
-        <label>Color</label>
-        <input type="color" id="wakeupPicker">
-        <label>Time</label>
-        <input type="time" id="wakeupInput" value="7:00">
-        <input type="submit" onClick="setTime('wakeup')" value="Submit">
-      </form>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
     <script src="https://www.w3schools.com/lib/w3color.js"></script>
@@ -44,11 +27,6 @@
           socket.emit("rgbLed", rgb);  //send the updated color to RGB LED via WebSocket
         });
       });
-
-      var bedtimeInput = document.getElementById("bedtimeInput");
-      function setTime(type) {
-        socket.emit("setTime", type, bedtimeInput.value);
-      }
     </script>
   </html>
 </body>

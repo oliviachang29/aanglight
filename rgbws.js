@@ -29,6 +29,12 @@ function handler (req, res) { //what to do on requests to port 8080
   });
 }
 
+function changeColor(r, g, b) {
+  ledRed.pwmWrite(r); //set RED LED to specified value
+  ledGreen.pwmWrite(g); //set GREEN LED to specified value
+  ledBlue.pwmWrite(b); //set BLUE LED to specified value
+}
+
 io.sockets.on('connection', function (socket) {// Web Socket Connection
   socket.on('rgbLed', function(data) { //get light switch status from client
     // console.log(data); //output data from WebSocket connection to console
@@ -38,15 +44,13 @@ io.sockets.on('connection', function (socket) {// Web Socket Connection
     greenRGB=parseInt(data.green);
     blueRGB=parseInt(data.blue);
 
-    ledRed.pwmWrite(redRGB); //set RED LED to specified value
-    ledGreen.pwmWrite(greenRGB); //set GREEN LED to specified value
-    ledBlue.pwmWrite(blueRGB); //set BLUE LED to specified value
+    changeColor(redRGB, greenRGB, blueRGB)    
   });
 
-  socket.on('setTime', function(type='wakeup', time) { // type is 'wakeup' or 'bedtime'
-    console.log("type: " + type)
-    console.log("time: " + time)
-  })
+  // socket.on('setTime', function(type='wakeup', time) { // type is 'wakeup' or 'bedtime'
+  //   console.log("type: " + type)
+  //   console.log("time: " + time)
+  // })
 });
 
 process.on('SIGINT', function () { //on ctrl+c
