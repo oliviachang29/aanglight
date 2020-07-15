@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aanglight Control Panel</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://ozyc-misc.s3-us-west-1.amazonaws.com/apple-touch-icon.png">
+  <link rel="icon" href="https://ozyc-misc.s3-us-west-1.amazonaws.com/favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+  <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+      integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script> -->
+  <style>
+    #main {
+      padding-top: 20px;
+    }
+
+    .card {
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-weight: bold;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .swatches {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .swatch {
+      margin-top: 10px
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-light bg-light">
+    <span class="navbar-brand mb-0 h1">Aanglight Control Panel</span>
+  </nav>
+  <div id="main" class="container">
+    <div class="row">
+      <div class="col-md-6 col-lg-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Color Picker</h5>
+            <p class="card-text">Sets the current color.
+            </p>
+            <input type="color" id="pickColor">
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Preset Swatches</h5>
+            <div class="swatches">
+              <button type="button" class="btn btn-outline-danger swatch" onClick="swatch(4, 0, 0)">Bedtime Red</button>
+              <button type="button" class="btn btn-outline-warning swatch" onClick="swatch(9, 5, 1)">Soft
+                Orange</button>
+              <button type="button" class="btn btn-outline-dark swatch" onClick="swatch(0,0,0)">Off</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Wake up</h5>
+            <p class="card-text">Sets the wake up time. Default: 7:30. Will not show updated time on reload.
+            </p>
+            <input type="time" id="wakeupTime">
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Wake up color</h5>
+            <p class="card-text">Sets the wake up color. Will not show updated color on reload.
+            </p>
+            <input type="color" id="wakeupColor" value="#00FBFF">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+  <script src="https://www.w3schools.com/lib/w3color.js"></script>
+  <script>
+    var wakeupTimeValue = "07:30";
+
+    var socket = io(); //load socket.io-client and connect to the host that serves the page
+
+    window.addEventListener("load", function () {
+      var picker = document.getElementById("pickColor");
+      picker.addEventListener("input", function () {
+        emitColor(this.value, 'rgbLed')
+      });
+
+      var wakeupInput = document.getElementById("wakeupTime");
+      wakeupInput.addEventListener("input", function () {
+        socket.emit("wakeupTime", this.value);
+      })
+
+      var wakeupColor = document.getElementById("wakeupColor");
+      wakeupColor.addEventListener("input", function () {
+        emitColor(this.value, 'wakeupColor')
+      })
+
+    });
+
+    function emitColor(value, emitName) {
+      var rgb = w3color("rgb(0,0,0)");
+      rgb.red = w3color(value).red;
+      rgb.green = w3color(value).green;
+      rgb.blue = w3color(value).blue;
+
+      socket.emit(emitName, rgb)
+    }
+
+    function swatch(r, g, b) {
+      const rgbObject = { r, g, b }
+      socket.emit("swatch", rgbObject);
+    }
+  </script>
+
+</html>
+</body>
+
+</html>
